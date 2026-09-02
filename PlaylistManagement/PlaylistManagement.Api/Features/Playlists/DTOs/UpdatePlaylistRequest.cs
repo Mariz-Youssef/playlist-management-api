@@ -1,6 +1,6 @@
 ﻿namespace PlaylistManagement.Api.Features.Playlists.DTOs
 {
-    public class pdatePlaylistRequest
+    public class UpdatePlaylistRequest
     {
     }
 }
