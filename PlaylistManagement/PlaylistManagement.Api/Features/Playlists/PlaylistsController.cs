@@ -23,5 +23,15 @@ namespace PlaylistManagement.Api.Features.Playlists
 
             return StatusCode(StatusCodes.Status201Created,response);
         }
+
+        [HttpPost("{playlistId:guid}/songs")]
+        public async Task<IActionResult> AddSong(Guid playlistId,AddSongToPlaylistRequest request,CancellationToken cancellationToken)
+        {
+            var userId = User.GetUserId();
+
+            await _playlistService.AddSongAsync(playlistId,request,userId,cancellationToken);
+
+            return NoContent();
+        }
     }
 }
