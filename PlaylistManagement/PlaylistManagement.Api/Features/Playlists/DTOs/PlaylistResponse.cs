@@ -1,6 +1,4 @@
-﻿using PlaylistManagement.Api.Features.Songs.DTOs;
-
-namespace PlaylistManagement.Api.Features.Playlists.DTOs
+﻿namespace PlaylistManagement.Api.Features.Playlists.DTOs
 {
     public class PlaylistResponse
     {

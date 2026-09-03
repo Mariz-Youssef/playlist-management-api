@@ -2,6 +2,7 @@
 using PlaylistManagement.Api.Models.Entities;
 using PlaylistManagement.Api.Repositories.Interfaces;
 using BCrypt.Net;
+using PlaylistManagement.Api.Exceptions;
 
 
 namespace PlaylistManagement.Api.Features.Authentication
@@ -24,7 +25,7 @@ namespace PlaylistManagement.Api.Features.Authentication
 
             if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                throw new UnauthorizedAccessException("Invalid email or password."); //will be changed to custom exception later
+                throw new UnauthorizedAccessException("Invalid email or password"); 
             }
 
             return _tokenService.GenerateAccessToken(user);
@@ -36,7 +37,7 @@ namespace PlaylistManagement.Api.Features.Authentication
             var emailExists = await _userRepository.EmailExistsAsync(email,cancellationToken);
             if (emailExists)
             {
-                throw new InvalidOperationException("A user with this email already exists."); //will be changed to custom exception later
+                throw new ConflictException("A user with this email already exists"); 
             }
             var user = new User
             {

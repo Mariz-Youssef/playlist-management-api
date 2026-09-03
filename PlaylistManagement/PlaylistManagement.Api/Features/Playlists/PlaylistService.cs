@@ -1,5 +1,5 @@
-﻿using PlaylistManagement.Api.Features.Playlists.DTOs;
-using PlaylistManagement.Api.Features.Songs.DTOs;
+﻿using PlaylistManagement.Api.Exceptions;
+using PlaylistManagement.Api.Features.Playlists.DTOs;
 using PlaylistManagement.Api.Models.Entities;
 using PlaylistManagement.Api.Repositories.Implementations;
 using PlaylistManagement.Api.Repositories.Interfaces;
@@ -23,22 +23,22 @@ namespace PlaylistManagement.Api.Features.Playlists
 
             if (playlist is null)
             {
-                throw new KeyNotFoundException("Playlist not found");
+                throw new NotFoundException("Playlist not found.");
             }
             if (playlist.UserId != userId)
             {
-                throw new UnauthorizedAccessException("you do not have access to this playlist");
+                throw new ForbiddenException("you do not have access to this playlist");
             }
             var song = await _songRepository.GetByIdAsync(request.SongId,cancellationToken);
 
             if (song is null)
             {
-                throw new KeyNotFoundException("song not found");
+                throw new NotFoundException("song not found");
             }
             var alreadyExists = await _playlistRepository.ContainsSongAsync(playlistId,request.SongId,cancellationToken);
             if (alreadyExists)
             {
-                throw new InvalidOperationException("The song is already in this playlist");
+                throw new ConflictException("The song is already in this playlist");
             }
             var playlistSong = new PlaylistSong
             {
@@ -95,12 +95,12 @@ namespace PlaylistManagement.Api.Features.Playlists
 
             if (playlist is null)
             {
-                throw new KeyNotFoundException("playlist not found");
+                throw new NotFoundException("playlist not found");
             }
 
             if (playlist.UserId != userId)
             {
-                throw new UnauthorizedAccessException("You do not have access to this playlist");
+                throw new ForbiddenException("You do not have access to this playlist");
             }
 
             playlist.Name = request.Name.Trim();
@@ -113,13 +113,12 @@ namespace PlaylistManagement.Api.Features.Playlists
 
             if (playlist is null)
             {
-                throw new KeyNotFoundException("Playlist not found");
+                throw new NotFoundException("Playlist not found");
             }
 
             if (playlist.UserId != userId)
             {
-                throw new UnauthorizedAccessException(
-                    "You do not have access to this playlist");
+                throw new ForbiddenException("You do not have access to this playlist");
             }
 
             _playlistRepository.Remove(playlist);
@@ -132,19 +131,19 @@ namespace PlaylistManagement.Api.Features.Playlists
 
             if (playlist is null)
             {
-                throw new KeyNotFoundException("Playlist not found");
+                throw new NotFoundException("Playlist not found");
             }
 
             if (playlist.UserId != userId)
             {
-                throw new UnauthorizedAccessException("You do not have access to this playlist.");
+                throw new ForbiddenException("You do not have access to this playlist.");
             }
 
             var playlistSong = await _playlistRepository.GetPlaylistSongAsync(playlistId,songId,cancellationToken);
 
             if (playlistSong is null)
             {
-                throw new KeyNotFoundException("Song is not in this playlist.");
+                throw new NotFoundException("Song is not in this playlist.");
             }
 
             _playlistRepository.RemoveSong(playlistSong);
