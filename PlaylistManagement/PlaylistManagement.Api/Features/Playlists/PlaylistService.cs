@@ -89,5 +89,42 @@ namespace PlaylistManagement.Api.Features.Playlists
                })
                .ToList();
         }
+        public async Task UpdateAsync(Guid playlistId,UpdatePlaylistRequest request,Guid userId,CancellationToken cancellationToken = default)
+        {
+            var playlist = await _playlistRepository.GetByIdAsync(playlistId,cancellationToken);
+
+            if (playlist is null)
+            {
+                throw new KeyNotFoundException("playlist not found");
+            }
+
+            if (playlist.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("You do not have access to this playlist");
+            }
+
+            playlist.Name = request.Name.Trim();
+
+            await _playlistRepository.SaveChangesAsync(cancellationToken);
+        }
+        public async Task DeleteAsync(Guid playlistId,Guid userId,CancellationToken cancellationToken = default)
+        {
+            var playlist = await _playlistRepository.GetByIdAsync(playlistId,cancellationToken);
+
+            if (playlist is null)
+            {
+                throw new KeyNotFoundException("Playlist not found");
+            }
+
+            if (playlist.UserId != userId)
+            {
+                throw new UnauthorizedAccessException(
+                    "You do not have access to this playlist");
+            }
+
+            _playlistRepository.Remove(playlist);
+
+            await _playlistRepository.SaveChangesAsync(cancellationToken);
+        }
     }
 }

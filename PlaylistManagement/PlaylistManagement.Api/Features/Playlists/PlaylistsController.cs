@@ -40,6 +40,25 @@ namespace PlaylistManagement.Api.Features.Playlists
 
             return Ok(response);
         }
+        [HttpPut("{playlistId:guid}")]
+        public async Task<IActionResult> Update(Guid playlistId,UpdatePlaylistRequest request,CancellationToken cancellationToken)
+        {
+            var userId = User.GetUserId();
+
+            await _playlistService.UpdateAsync(playlistId,request,userId,cancellationToken);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{playlistId:guid}")]
+        public async Task<IActionResult> Delete(Guid playlistId,CancellationToken cancellationToken)
+        {
+            var userId = User.GetUserId();
+
+            await _playlistService.DeleteAsync(playlistId,userId,cancellationToken);
+
+            return NoContent();
+        }
 
     }
 }

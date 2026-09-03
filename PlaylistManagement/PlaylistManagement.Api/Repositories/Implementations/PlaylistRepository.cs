@@ -45,5 +45,13 @@ namespace PlaylistManagement.Api.Repositories.Implementations
              .OrderBy(p => p.Name)
              .ToListAsync(cancellationToken);
         }
+        public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        public void Remove(Playlist playlist)
+        {
+            _context.Playlists.Remove(playlist);
+        }
     }
 }
