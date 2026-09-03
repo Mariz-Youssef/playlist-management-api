@@ -28,10 +28,18 @@ namespace PlaylistManagement.Api.Features.Playlists
         public async Task<IActionResult> AddSong(Guid playlistId,AddSongToPlaylistRequest request,CancellationToken cancellationToken)
         {
             var userId = User.GetUserId();
-
             await _playlistService.AddSongAsync(playlistId,request,userId,cancellationToken);
 
             return NoContent();
         }
+        [HttpGet]
+        public async Task<ActionResult<List<PlaylistResponse>>> GetMyPlaylists(CancellationToken cancellationToken)
+        {
+            var userId = User.GetUserId();
+            var response = await _playlistService.GetMyPlaylistsAsync(userId,cancellationToken);
+
+            return Ok(response);
+        }
+
     }
 }

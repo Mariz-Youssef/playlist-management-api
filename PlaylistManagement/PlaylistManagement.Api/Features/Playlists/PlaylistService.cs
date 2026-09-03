@@ -1,4 +1,5 @@
 ﻿using PlaylistManagement.Api.Features.Playlists.DTOs;
+using PlaylistManagement.Api.Features.Songs.DTOs;
 using PlaylistManagement.Api.Models.Entities;
 using PlaylistManagement.Api.Repositories.Implementations;
 using PlaylistManagement.Api.Repositories.Interfaces;
@@ -66,6 +67,27 @@ namespace PlaylistManagement.Api.Features.Playlists
                 Name = playlist.Name,
                 CreatedAt = playlist.CreatedAt
             };
+        }
+
+        public async Task<List<PlaylistResponse>> GetMyPlaylistsAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            var playlists = await _playlistRepository.GetByUserIdAsync(userId,cancellationToken);
+            return playlists
+               .Select(p => new PlaylistResponse
+               {
+                   Id = p.Id,
+                   Name = p.Name,
+                   CreatedAt = p.CreatedAt,
+                   Songs = p.PlaylistSongs
+                       .Select(ps => new SongResponse
+                       {
+                           Id = ps.Song.Id,
+                           Title = ps.Song.Title,
+                           Artist = ps.Song.Artist
+                       })
+                       .ToList()
+               })
+               .ToList();
         }
     }
 }

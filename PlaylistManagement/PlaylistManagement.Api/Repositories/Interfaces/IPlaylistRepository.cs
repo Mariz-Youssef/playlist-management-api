@@ -8,6 +8,7 @@ namespace PlaylistManagement.Api.Repositories.Interfaces
         Task<Playlist?> GetByIdAsync(Guid playlistId,CancellationToken cancellationToken = default);
         Task<bool> ContainsSongAsync(Guid playlistId,Guid songId,CancellationToken cancellationToken = default); 
         Task AddSongAsync(PlaylistSong playlistSong,CancellationToken cancellationToken = default);
+        Task<List<Playlist>> GetByUserIdAsync(Guid userId,CancellationToken cancellationToken = default);
 
     }
 }

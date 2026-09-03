@@ -35,6 +35,15 @@ namespace PlaylistManagement.Api.Repositories.Implementations
             return await _context.Playlists.FirstOrDefaultAsync(p => p.Id == playlistId,cancellationToken);
         }
 
-       
+        public async Task<List<Playlist>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Playlists
+             .AsNoTracking()
+             .Where(p => p.UserId == userId)
+             .Include(p => p.PlaylistSongs)
+                 .ThenInclude(ps => ps.Song)
+             .OrderBy(p => p.Name)
+             .ToListAsync(cancellationToken);
+        }
     }
 }
