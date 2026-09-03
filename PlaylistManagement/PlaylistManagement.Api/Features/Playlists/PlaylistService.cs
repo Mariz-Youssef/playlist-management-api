@@ -1,5 +1,6 @@
 ﻿using PlaylistManagement.Api.Features.Playlists.DTOs;
 using PlaylistManagement.Api.Models.Entities;
+using PlaylistManagement.Api.Repositories.Implementations;
 using PlaylistManagement.Api.Repositories.Interfaces;
 
 namespace PlaylistManagement.Api.Features.Playlists
@@ -7,10 +8,47 @@ namespace PlaylistManagement.Api.Features.Playlists
     public class PlaylistService : IPlaylistService
     {
         private readonly IPlaylistRepository _playlistRepository;
-        public PlaylistService(IPlaylistRepository playlistRepository)
+        private readonly ISongRepository _songRepository;
+
+        public PlaylistService(IPlaylistRepository playlistRepository,ISongRepository songRepository)
         {
             _playlistRepository = playlistRepository;
+            _songRepository = songRepository;
         }
+
+        public async Task AddSongAsync(Guid playlistId, AddSongToPlaylistRequest request, Guid userId, CancellationToken cancellationToken = default)
+        {
+            var playlist = await _playlistRepository.GetByIdAsync(playlistId,cancellationToken);
+
+            if (playlist is null)
+            {
+                throw new KeyNotFoundException("Playlist not found");
+            }
+            if (playlist.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("you do not have access to this playlist");
+            }
+            var song = await _songRepository.GetByIdAsync(request.SongId,cancellationToken);
+
+            if (song is null)
+            {
+                throw new KeyNotFoundException("song not found");
+            }
+            var alreadyExists = await _playlistRepository.ContainsSongAsync(playlistId,request.SongId,cancellationToken);
+            if (alreadyExists)
+            {
+                throw new InvalidOperationException("The song is already in this playlist");
+            }
+            var playlistSong = new PlaylistSong
+            {
+                PlaylistId = playlistId,
+                SongId = request.SongId,
+                AddedAt = DateTime.UtcNow
+            };
+
+            await _playlistRepository.AddSongAsync(playlistSong,cancellationToken);
+        }
+
         public async Task<PlaylistResponse> CreateAsync(CreatePlaylistRequest request, Guid userId, CancellationToken cancellationToken = default)
         {
             var playlist = new Playlist
