@@ -5,6 +5,7 @@ using Microsoft.OpenApi;
 using PlaylistManagement.Api.Data;
 using PlaylistManagement.Api.Features.Authentication;
 using PlaylistManagement.Api.Features.Playlists;
+using PlaylistManagement.Api.Middleware;
 using PlaylistManagement.Api.Repositories.Implementations;
 using PlaylistManagement.Api.Repositories.Interfaces;
 using System.Text;
@@ -98,6 +99,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
