@@ -11,6 +11,8 @@ namespace PlaylistManagement.Api.Repositories.Interfaces
         Task<List<Playlist>> GetByUserIdAsync(Guid userId,CancellationToken cancellationToken = default);
         Task SaveChangesAsync(CancellationToken cancellationToken = default);
         void Remove(Playlist playlist);
+        Task<PlaylistSong?> GetPlaylistSongAsync(Guid playlistId,Guid songId,CancellationToken cancellationToken = default);
+        void RemoveSong(PlaylistSong playlistSong);
 
     }
 }

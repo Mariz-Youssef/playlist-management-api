@@ -53,5 +53,16 @@ namespace PlaylistManagement.Api.Repositories.Implementations
         {
             _context.Playlists.Remove(playlist);
         }
+
+        public async Task<PlaylistSong?> GetPlaylistSongAsync(Guid playlistId, Guid songId, CancellationToken cancellationToken = default)
+        {
+            return await _context.PlaylistSongs
+                .FirstOrDefaultAsync(ps => ps.PlaylistId == playlistId &&ps.SongId == songId,cancellationToken);
+        }
+
+        public void RemoveSong(PlaylistSong playlistSong)
+        {
+            _context.PlaylistSongs.Remove(playlistSong);
+        }
     }
 }

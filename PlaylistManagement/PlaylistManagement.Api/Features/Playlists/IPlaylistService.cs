@@ -9,6 +9,7 @@ namespace PlaylistManagement.Api.Features.Playlists
         Task<List<PlaylistResponse>> GetMyPlaylistsAsync(Guid userId,CancellationToken cancellationToken = default);
         Task UpdateAsync(Guid playlistId, UpdatePlaylistRequest request, Guid userId, CancellationToken cancellationToken = default);
         Task DeleteAsync(Guid playlistId, Guid userId, CancellationToken cancellationToken = default);
+        Task RemoveSongAsync(Guid playlistId, Guid songId, Guid userId, CancellationToken cancellationToken = default);
 
     }
 }

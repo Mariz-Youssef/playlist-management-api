@@ -60,5 +60,15 @@ namespace PlaylistManagement.Api.Features.Playlists
             return NoContent();
         }
 
+        [HttpDelete("{playlistId:guid}/songs/{songId:guid}")]
+        public async Task<IActionResult> RemoveSong(Guid playlistId,Guid songId,CancellationToken cancellationToken)
+        {
+            var userId = User.GetUserId();
+
+            await _playlistService.RemoveSongAsync(playlistId,songId,userId,cancellationToken);
+
+            return NoContent();
+        }
+
     }
 }

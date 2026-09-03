@@ -126,5 +126,31 @@ namespace PlaylistManagement.Api.Features.Playlists
 
             await _playlistRepository.SaveChangesAsync(cancellationToken);
         }
+        public async Task RemoveSongAsync(Guid playlistId,Guid songId,Guid userId,CancellationToken cancellationToken = default)
+        {
+            var playlist = await _playlistRepository.GetByIdAsync(playlistId,cancellationToken);
+
+            if (playlist is null)
+            {
+                throw new KeyNotFoundException("Playlist not found");
+            }
+
+            if (playlist.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("You do not have access to this playlist.");
+            }
+
+            var playlistSong = await _playlistRepository.GetPlaylistSongAsync(playlistId,songId,cancellationToken);
+
+            if (playlistSong is null)
+            {
+                throw new KeyNotFoundException("Song is not in this playlist.");
+            }
+
+            _playlistRepository.RemoveSong(playlistSong);
+
+            await _playlistRepository.SaveChangesAsync(
+                cancellationToken);
+        }
     }
 }
